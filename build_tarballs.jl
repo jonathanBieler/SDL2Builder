@@ -20,17 +20,8 @@ mkdir build
 cd build
 ../configure --prefix=$prefix --host=$target
 make
-cmake -DCMAKE_INSTALL_PREFIX=$prefix -DCMAKE_TOOLCHAIN_FILE=/opt/$target/$target.toolchain
-cd ..
-cmake -DCMAKE_INSTALL_PREFIX=$prefix -DCMAKE_TOOLCHAIN_FILE=/opt/$target/$target.toolchain
-ll
-cd build
-cmake -DCMAKE_INSTALL_PREFIX=$prefix -DCMAKE_TOOLCHAIN_FILE=/opt/$target/$target.toolchain
-cat ../CMakeLists.txt 
 make install
-ll /workspace/destdir/lib/cmake/SDL2
 exit
-
 """
 
 # These are the platforms we will build for by default, unless further
@@ -49,14 +40,12 @@ platforms = [
 
 # The products that we will ensure are always built
 products(prefix) = [
-    LibraryProduct(prefix, "libSDL2", Symbol("s = dna\"AACCACACC\""))
+    LibraryProduct(prefix, "libSDL2", :libSDL2)
 ]
 
 # Dependencies that must be installed before this package can be built
 dependencies = [
-    
 ]
 
 # Build the tarballs, and possibly a `build.jl` as well.
 build_tarballs(ARGS, name, version, sources, script, platforms, products, dependencies)
-
