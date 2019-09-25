@@ -1,0 +1,39 @@
+language: julia
+os:
+  - linux
+julia:
+  - 1.0
+notifications:
+  email: false
+git:
+  depth: 99999999
+cache:
+  timeout: 1000
+  directories:
+    - downloads
+env:
+  global:
+    - BINARYBUILDER_DOWNLOADS_CACHE=downloads
+    - BINARYBUILDER_AUTOMATIC_APPLE=false
+sudo: required
+
+# Before anything else, get the latest versions of things
+before_script:
+  - julia -e 'using Pkg; pkg"add BinaryProvider"; pkg"add BinaryBuilder#master"; Pkg.build()'
+
+script:
+  - julia build_tarballs.jl
+
+
+deploy:
+    provider: releases
+    api_key:
+        # Note; this api_key is only valid for jonathanBieler/SDL2Builder; you need
+        # to make your own: https://docs.travis-ci.com/user/deployment/releases/
+        secure: SVsvKhZietyKG5ywSt4E/OeS3kPVePCLU65YBOU2g1TNOJUGhvWa0I0x9DbKYsIoii1zYa4tG2ljp0OCYp6cLmaLcpRILsX71JVHVqnKla8Pu9x75MkdBjlVDBp6uCoVeO1mdD+b3J/IuGNYisVPKOC8bV8rmNmspMy/VrSWo3qjyoZxa1T7h03r/9bKP2SINlETi742pvBCcwP5/txwzm+1n+sDaJLXLTPmZfrKxhjdeIxMl+2Qf1oijkFDI/l/km99W1IhiDUKS4zv333rxb9fG2eVih7xHsBnkYIgoMFrctTSYnEBjH6SAY0z/L35ZMHl7kkrvBuKVI98QDptbwe0Dk0WZYfyW3LlAAhCdH6kfpfC98bef0VG58fgmjtDj1naxTBtgYRtdyuT/Zk3RrxgKGm4tGLbaeTBwt/Tbh+57jholLaNyT4ZZWBPsFZDNthL3aQoIrxWkRhaSrfpR0ReCS21edCKHaFlAc4uP3QfjE31Wm5ewRkkWHfdwlDcPojQn1DD+z1gNIxOlLAZQOm+zyi1I/ZXB8CBcJAXeHLf1YiOeE4TbuVFx+R+RP9n011o6TVLnBZq6p9SDYXAuawu8NkG4IUoiXJbbUc2wRQ9pY5t+UcfmiC4zwKUcBSFoNp4dIjaZOoWwd6QJeGmTEcUDFhGh3nYQ1ESWmUsShc=
+    file_glob: true
+    file: products/*
+    skip_cleanup: true
+    on:
+        repo: jonathanBieler/SDL2Builder
+        tags: true
